@@ -18,16 +18,17 @@ npm run build
 ```
 azure-mcp-server/
 ├── src/
-│   ├── tools/        # MCP Tools
-│   │   └── ExampleTool.ts
-│   └── index.ts      # Server entry point
+│   ├── tools/                # MCP Tools
+│   │   ├── ExampleTool.ts    # Example tool template
+│   │   └── BlobsTool.ts      # Azure Blob Storage integration
+│   └── index.ts              # Server entry point
 ├── package.json
 └── tsconfig.json
 ```
 
 ## Tool Development
 
-Example tool structure:
+### Example Tool Structure
 
 ```typescript
 import { MCPTool } from 'mcp-framework';
@@ -57,75 +58,73 @@ class MyTool extends MCPTool<MyToolInput> {
 export default MyTool;
 ```
 
-## Publishing to npm
+## Azure Blob Storage Tool
 
-1. Update your package.json:
+This MCP server includes a tool (`azure_blobs`) for interacting with Azure Blob Storage using DefaultAzureCredential for authentication.
 
-   - Ensure `name` is unique and follows npm naming conventions
-   - Set appropriate `version`
-   - Add `description`, `author`, `license`, etc.
-   - Check `bin` points to the correct entry file
+### Required Azure Permissions
 
-2. Build and test locally:
+To use the Azure Blob Storage tool, you need the following Azure RBAC roles:
 
-   ```bash
-   npm run build
-   npm link
-   azure-mcp-server  # Test your CLI locally
-   ```
+- **Storage Account Contributor**: Required for listing containers and managing storage account settings
+- **Storage Blob Data Contributor**: Required for creating/reading/updating/deleting blobs and containers
 
-3. Login to npm (create account if necessary):
+Without these permissions, certain operations may fail with authorization errors.
 
-   ```bash
-   npm login
-   ```
+### Authentication
 
-4. Publish your package:
-   ```bash
-   npm publish
-   ```
+The tool uses DefaultAzureCredential from @azure/identity, which tries multiple authentication methods in the following order:
 
-After publishing, users can add it to their claude desktop client (read below) or run it with npx
+1. Environment variables (AZURE_TENANT_ID, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET)
+2. Managed Identity
+3. Azure CLI credentials
+4. Visual Studio Code credentials
+5. Interactive browser login (as a fallback)
 
-````
+Ensure at least one of these authentication methods is properly configured.
 
-## Using with Claude Desktop
+### Operations
 
-### Local Development
+The Azure Blob Storage tool supports the following operations:
 
-Add this configuration to your Claude Desktop config file:
+- **listContainers**: Lists all containers in the storage account
+- **createContainer**: Creates a new container
+- **listBlobs**: Lists all blobs in a container
+- **uploadBlob**: Uploads a blob to a container
+- **downloadBlob**: Downloads a blob and returns its content
+- **deleteBlob**: Deletes a blob from a container
 
-**MacOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-**Windows**: `%APPDATA%/Claude/claude_desktop_config.json`
+### Example Usage
 
-```json
-{
-  "mcpServers": {
-    "azure-mcp-server": {
-      "command": "node",
-      "args":["/absolute/path/to/azure-mcp-server/dist/index.js"]
-    }
-  }
-}
-````
-
-### After Publishing
-
-Add this configuration to your Claude Desktop config file:
-
-**MacOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-**Windows**: `%APPDATA%/Claude/claude_desktop_config.json`
+To list containers in a storage account:
 
 ```json
 {
-  "mcpServers": {
-    "azure-mcp-server": {
-      "command": "npx",
-      "args": ["azure-mcp-server"]
-    }
-  }
+  "operation": "listContainers",
+  "accountName": "yourstorageaccount"
 }
 ```
+
+To upload a blob:
+
+```json
+{
+  "operation": "uploadBlob",
+  "accountName": "yourstorageaccount",
+  "containerName": "mycontainer",
+  "blobName": "example.txt",
+  "content": "This is the content of the blob"
+}
+```
+
+### Debugging
+
+If you encounter issues with the Azure Blob Storage tool, check the console logs for detailed debugging information. Common issues include:
+
+- Authentication failures
+- Missing permissions
+- Non-existent containers or blobs
+- Network connectivity problems
 
 ## Building and Testing
 
