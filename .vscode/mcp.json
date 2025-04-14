@@ -1,0 +1,10 @@
+{
+  "servers": {
+    "azure-mcp-server": {
+      "command": "node",
+      "args": [
+        "/Users/matthewleleux/Documents/HeyKiddo_Projects/Playground/my-mcp-server/dist/index.js"
+      ]
+    }
+  }
+}
