@@ -1,4 +1,4 @@
-# my-mcp-server
+# azure-mcp-server
 
 A Model Context Protocol (MCP) server built with mcp-framework.
 
@@ -16,7 +16,7 @@ npm run build
 ## Project Structure
 
 ```
-my-mcp-server/
+azure-mcp-server/
 ├── src/
 │   ├── tools/        # MCP Tools
 │   │   └── ExampleTool.ts
@@ -25,41 +25,27 @@ my-mcp-server/
 └── tsconfig.json
 ```
 
-## Adding Components
-
-The project comes with an example tool in `src/tools/ExampleTool.ts`. You can add more tools using the CLI:
-
-```bash
-# Add a new tool
-mcp add tool my-tool
-
-# Example tools you might create:
-mcp add tool data-processor
-mcp add tool api-client
-mcp add tool file-handler
-```
-
 ## Tool Development
 
 Example tool structure:
 
 ```typescript
-import { MCPTool } from "mcp-framework";
-import { z } from "zod";
+import { MCPTool } from 'mcp-framework';
+import { z } from 'zod';
 
 interface MyToolInput {
   message: string;
 }
 
 class MyTool extends MCPTool<MyToolInput> {
-  name = "my_tool";
-  description = "Describes what your tool does";
+  name = 'my_tool';
+  description = 'Describes what your tool does';
 
   schema = {
     message: {
       type: z.string(),
-      description: "Description of this input parameter",
-    },
+      description: 'Description of this input parameter'
+    }
   };
 
   async execute(input: MyToolInput) {
@@ -74,19 +60,22 @@ export default MyTool;
 ## Publishing to npm
 
 1. Update your package.json:
+
    - Ensure `name` is unique and follows npm naming conventions
    - Set appropriate `version`
    - Add `description`, `author`, `license`, etc.
    - Check `bin` points to the correct entry file
 
 2. Build and test locally:
+
    ```bash
    npm run build
    npm link
-   my-mcp-server  # Test your CLI locally
+   azure-mcp-server  # Test your CLI locally
    ```
 
 3. Login to npm (create account if necessary):
+
    ```bash
    npm login
    ```
@@ -97,7 +86,8 @@ export default MyTool;
    ```
 
 After publishing, users can add it to their claude desktop client (read below) or run it with npx
-```
+
+````
 
 ## Using with Claude Desktop
 
@@ -111,13 +101,13 @@ Add this configuration to your Claude Desktop config file:
 ```json
 {
   "mcpServers": {
-    "my-mcp-server": {
+    "azure-mcp-server": {
       "command": "node",
-      "args":["/absolute/path/to/my-mcp-server/dist/index.js"]
+      "args":["/absolute/path/to/azure-mcp-server/dist/index.js"]
     }
   }
 }
-```
+````
 
 ### After Publishing
 
@@ -129,9 +119,9 @@ Add this configuration to your Claude Desktop config file:
 ```json
 {
   "mcpServers": {
-    "my-mcp-server": {
+    "azure-mcp-server": {
       "command": "npx",
-      "args": ["my-mcp-server"]
+      "args": ["azure-mcp-server"]
     }
   }
 }
