@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BaseAzureStorageTool } from './BaseAzureStorageTool';
+import BaseAzureStorageTool from './BaseAzureStorageTool';
 
 interface UploadBlobInput {
   accountName: string;
@@ -36,28 +36,40 @@ class UploadBlobTool extends BaseAzureStorageTool<UploadBlobInput> {
 
   async execute(input: UploadBlobInput) {
     try {
-      console.log(`[DEBUG] Uploading blob ${input.blobName} to container ${input.containerName}`);
+      console.log(
+        `[DEBUG] Uploading blob ${input.blobName} to container ${input.containerName}`
+      );
       const blobServiceClient = this.createBlobServiceClient(input.accountName);
-      
-      console.log(`[DEBUG] Getting container client for: ${input.containerName}`);
-      const containerClient = blobServiceClient.getContainerClient(input.containerName);
-      
+
+      console.log(
+        `[DEBUG] Getting container client for: ${input.containerName}`
+      );
+      const containerClient = blobServiceClient.getContainerClient(
+        input.containerName
+      );
+
       // Check if container exists
-      console.log(`[DEBUG] Checking if container exists: ${input.containerName}`);
+      console.log(
+        `[DEBUG] Checking if container exists: ${input.containerName}`
+      );
       const containerExists = await containerClient.exists();
       if (!containerExists) {
         console.log(`[DEBUG] Container does not exist: ${input.containerName}`);
-        return { 
-          containerName: input.containerName, 
-          blobName: input.blobName, 
-          error: 'Container does not exist' 
+        return {
+          containerName: input.containerName,
+          blobName: input.blobName,
+          error: 'Container does not exist'
         };
       }
-      
-      console.log(`[DEBUG] Getting block blob client for: ${input.blobName}`);
-      const blockBlobClient = containerClient.getBlockBlobClient(input.blobName);
 
-      console.log(`[DEBUG] Uploading blob: ${input.blobName}, size: ${input.content.length} bytes`);
+      console.log(`[DEBUG] Getting block blob client for: ${input.blobName}`);
+      const blockBlobClient = containerClient.getBlockBlobClient(
+        input.blobName
+      );
+
+      console.log(
+        `[DEBUG] Uploading blob: ${input.blobName}, size: ${input.content.length} bytes`
+      );
       const uploadBlobResponse = await blockBlobClient.upload(
         input.content,
         input.content.length

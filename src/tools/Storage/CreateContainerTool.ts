@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BaseAzureStorageTool } from './BaseAzureStorageTool';
+import BaseAzureStorageTool from './BaseAzureStorageTool';
 
 interface CreateContainerInput {
   accountName: string;
@@ -26,14 +26,22 @@ class CreateContainerTool extends BaseAzureStorageTool<CreateContainerInput> {
 
   async execute(input: CreateContainerInput) {
     try {
-      console.log(`[DEBUG] Creating container ${input.containerName} in account ${input.accountName}`);
+      console.log(
+        `[DEBUG] Creating container ${input.containerName} in account ${input.accountName}`
+      );
       const blobServiceClient = this.createBlobServiceClient(input.accountName);
-      
-      console.log(`[DEBUG] Getting container client for: ${input.containerName}`);
-      const containerClient = blobServiceClient.getContainerClient(input.containerName);
-      
+
+      console.log(
+        `[DEBUG] Getting container client for: ${input.containerName}`
+      );
+      const containerClient = blobServiceClient.getContainerClient(
+        input.containerName
+      );
+
       // Check if container already exists
-      console.log(`[DEBUG] Checking if container exists: ${input.containerName}`);
+      console.log(
+        `[DEBUG] Checking if container exists: ${input.containerName}`
+      );
       const containerExists = await containerClient.exists();
       if (containerExists) {
         console.log(`[DEBUG] Container already exists: ${input.containerName}`);
@@ -43,10 +51,12 @@ class CreateContainerTool extends BaseAzureStorageTool<CreateContainerInput> {
           error: 'Container already exists'
         };
       }
-      
+
       console.log(`[DEBUG] Creating container: ${input.containerName}`);
       const createContainerResponse = await containerClient.create();
-      console.log(`[DEBUG] Container created successfully: ${input.containerName}`);
+      console.log(
+        `[DEBUG] Container created successfully: ${input.containerName}`
+      );
 
       return {
         containerName: input.containerName,

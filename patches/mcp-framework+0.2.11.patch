@@ -1,0 +1,71 @@
+diff --git a/node_modules/mcp-framework/dist/loaders/toolLoader.js b/node_modules/mcp-framework/dist/loaders/toolLoader.js
+index bd3f7a7..23d0b73 100644
+--- a/node_modules/mcp-framework/dist/loaders/toolLoader.js
++++ b/node_modules/mcp-framework/dist/loaders/toolLoader.js
+@@ -16,8 +16,8 @@ export class ToolLoader {
+                 logger.debug("Tools path exists but is not a directory");
+                 return false;
+             }
+-            const files = await fs.readdir(this.TOOLS_DIR);
+-            const hasValidFiles = files.some((file) => this.isToolFile(file));
++            const allFiles = await this.getAllFiles(this.TOOLS_DIR);
++            const hasValidFiles = allFiles.some((file) => this.isToolFile(file));
+             logger.debug(`Tools directory has valid files: ${hasValidFiles}`);
+             return hasValidFiles;
+         }
+@@ -26,6 +26,16 @@ export class ToolLoader {
+             return false;
+         }
+     }
++
++    async getAllFiles(dir) {
++        const entries = await fs.readdir(dir, { withFileTypes: true });
++        const files = await Promise.all(entries.map((entry) => {
++            const res = join(dir, entry.name);
++            return entry.isDirectory() ? this.getAllFiles(res) : res;
++        }));
++        return files.flat();
++    }
++
+     isToolFile(file) {
+         if (!file.endsWith(".js"))
+             return false;
+@@ -39,6 +49,7 @@ export class ToolLoader {
+         logger.debug(`Checking file ${file}: ${isExcluded ? "excluded" : "included"}`);
+         return !isExcluded;
+     }
++
+     validateTool(tool) {
+         const isValid = Boolean(tool &&
+             typeof tool.name === "string" &&
+@@ -52,6 +63,7 @@ export class ToolLoader {
+         }
+         return isValid;
+     }
++
+     async loadTools() {
+         try {
+             logger.debug(`Attempting to load tools from: ${this.TOOLS_DIR}`);
+@@ -67,17 +79,16 @@ export class ToolLoader {
+                 logger.error(`Path is not a directory: ${this.TOOLS_DIR}`);
+                 return [];
+             }
+-            const files = await fs.readdir(this.TOOLS_DIR);
+-            logger.debug(`Found files in directory: ${files.join(", ")}`);
++            const allFiles = await this.getAllFiles(this.TOOLS_DIR);
++            logger.debug(`Found files in directory: ${allFiles.join(", ")}`);
+             const tools = [];
+-            for (const file of files) {
++            for (const file of allFiles) {
+                 if (!this.isToolFile(file)) {
+                     continue;
+                 }
+                 try {
+-                    const fullPath = join(this.TOOLS_DIR, file);
+-                    logger.debug(`Attempting to load tool from: ${fullPath}`);
+-                    const importPath = `file://${fullPath}`;
++                    logger.debug(`Attempting to load tool from: ${file}`);
++                    const importPath = `file://${file}`;
+                     const { default: ToolClass } = await import(importPath);
+                     if (!ToolClass) {
+                         logger.warn(`No default export found in ${file}`);

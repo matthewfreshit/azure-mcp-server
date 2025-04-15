@@ -5,7 +5,9 @@ import { DefaultAzureCredential } from '@azure/identity';
 /**
  * Base class for Azure Storage tools that provides common functionality
  */
-export abstract class BaseAzureStorageTool<T extends Record<string, any>> extends MCPTool<T> {
+export default abstract class BaseAzureStorageTool<
+  T extends Record<string, any>
+> extends MCPTool<T> {
   /**
    * Creates a BlobServiceClient using DefaultAzureCredential
    * @param accountName Azure Storage account name

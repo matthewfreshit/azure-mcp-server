@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BaseAzureStorageTool } from './BaseAzureStorageTool';
+import BaseAzureStorageTool from './BaseAzureStorageTool';
 
 interface ListContainersInput {
   accountName: string;
@@ -21,12 +21,14 @@ class ListContainersTool extends BaseAzureStorageTool<ListContainersInput> {
 
   async execute(input: ListContainersInput) {
     try {
-      console.log(`[DEBUG] Starting ListContainersTool for account: ${input.accountName}`);
+      console.log(
+        `[DEBUG] Starting ListContainersTool for account: ${input.accountName}`
+      );
       const blobServiceClient = this.createBlobServiceClient(input.accountName);
-      
+
       console.log(`[DEBUG] Getting container iterator`);
       const containerIterator = blobServiceClient.listContainers();
-      
+
       const containers = [];
       console.log(`[DEBUG] Iterating through containers`);
       for await (const container of containerIterator) {
@@ -37,7 +39,7 @@ class ListContainersTool extends BaseAzureStorageTool<ListContainersInput> {
         });
       }
       console.log(`[DEBUG] Found ${containers.length} containers in total`);
-      
+
       return { containers };
     } catch (error) {
       console.error(`[DEBUG ERROR] Error listing containers:`, error);
