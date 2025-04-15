@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BaseAzureStorageTool } from './BaseAzureStorageTool';
+import BaseAzureStorageTool from './BaseAzureStorageTool';
 
 interface ListBlobsInput {
   accountName: string;

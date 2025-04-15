@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { BaseAzureStorageTool } from './BaseAzureStorageTool';
+import BaseAzureStorageTool from './BaseAzureStorageTool';
 
 interface DownloadBlobInput {
   accountName: string;
@@ -31,14 +31,22 @@ class DownloadBlobTool extends BaseAzureStorageTool<DownloadBlobInput> {
 
   async execute(input: DownloadBlobInput) {
     try {
-      console.log(`[DEBUG] Downloading blob ${input.blobName} from container ${input.containerName}`);
+      console.log(
+        `[DEBUG] Downloading blob ${input.blobName} from container ${input.containerName}`
+      );
       const blobServiceClient = this.createBlobServiceClient(input.accountName);
-      
-      console.log(`[DEBUG] Getting container client for: ${input.containerName}`);
-      const containerClient = blobServiceClient.getContainerClient(input.containerName);
-      
+
+      console.log(
+        `[DEBUG] Getting container client for: ${input.containerName}`
+      );
+      const containerClient = blobServiceClient.getContainerClient(
+        input.containerName
+      );
+
       // Check if container exists
-      console.log(`[DEBUG] Checking if container exists: ${input.containerName}`);
+      console.log(
+        `[DEBUG] Checking if container exists: ${input.containerName}`
+      );
       const containerExists = await containerClient.exists();
       if (!containerExists) {
         console.log(`[DEBUG] Container does not exist: ${input.containerName}`);
@@ -48,10 +56,10 @@ class DownloadBlobTool extends BaseAzureStorageTool<DownloadBlobInput> {
           error: 'Container does not exist'
         };
       }
-      
+
       console.log(`[DEBUG] Getting blob client for: ${input.blobName}`);
       const blobClient = containerClient.getBlobClient(input.blobName);
-      
+
       // Check if blob exists
       console.log(`[DEBUG] Checking if blob exists: ${input.blobName}`);
       const blobExists = await blobClient.exists();
