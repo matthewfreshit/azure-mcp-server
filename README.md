@@ -19,8 +19,16 @@ npm run build
 azure-mcp-server/
 ├── src/
 │   ├── tools/                # MCP Tools
-│   │   ├── ExampleTool.ts    # Example tool template
-│   │   └── BlobsTool.ts      # Azure Blob Storage integration
+│   │   ├── Storage/      # Azure Storage tools
+│   │   │   ├── BaseAzureStorageTool.ts  # Base class for Azure tools
+│   │   │   ├── ListContainersTool.ts    # List containers
+│   │   │   ├── CreateContainerTool.ts   # Create container
+│   │   │   ├── DeleteContainerTool.ts   # Delete container
+│   │   │   ├── ListBlobsTool.ts         # List blobs
+│   │   │   ├── UploadBlobTool.ts        # Upload blob
+│   │   │   ├── DownloadBlobTool.ts      # Download blob
+│   │   │   └── DeleteBlobTool.ts        # Delete blob
+│   │   └── ExampleTool.ts    # Example tool template
 │   └── index.ts              # Server entry point
 ├── package.json
 └── tsconfig.json
@@ -58,13 +66,13 @@ class MyTool extends MCPTool<MyToolInput> {
 export default MyTool;
 ```
 
-## Azure Blob Storage Tool
+## Azure Storage Tools
 
-This MCP server includes a tool (`azure_blobs`) for interacting with Azure Blob Storage using DefaultAzureCredential for authentication.
+This MCP server includes several tools for interacting with Azure Blob Storage using DefaultAzureCredential for authentication.
 
 ### Required Azure Permissions
 
-To use the Azure Blob Storage tool, you need the following Azure RBAC roles:
+To use the Azure Storage tools, you need the following Azure RBAC roles:
 
 - **Storage Account Contributor**: Required for listing containers and managing storage account settings
 - **Storage Blob Data Contributor**: Required for creating/reading/updating/deleting blobs and containers
@@ -73,7 +81,7 @@ Without these permissions, certain operations may fail with authorization errors
 
 ### Authentication
 
-The tool uses DefaultAzureCredential from @azure/identity, which tries multiple authentication methods in the following order:
+All tools use DefaultAzureCredential from @azure/identity, which tries multiple authentication methods in the following order:
 
 1. Environment variables (AZURE_TENANT_ID, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET)
 2. Managed Identity
@@ -83,33 +91,55 @@ The tool uses DefaultAzureCredential from @azure/identity, which tries multiple 
 
 Ensure at least one of these authentication methods is properly configured.
 
-### Operations
+### Available Tools
 
-The Azure Blob Storage tool supports the following operations:
+The following Azure Storage tools are available:
 
-- **listContainers**: Lists all containers in the storage account
-- **createContainer**: Creates a new container
-- **listBlobs**: Lists all blobs in a container
-- **uploadBlob**: Uploads a blob to a container
-- **downloadBlob**: Downloads a blob and returns its content
-- **deleteBlob**: Deletes a blob from a container
+#### Container Operations
+
+- **azure_list_containers**: Lists all containers in a storage account
+- **azure_create_container**: Creates a new container
+- **azure_delete_container**: Deletes a container
+
+#### Blob Operations
+
+- **azure_list_blobs**: Lists all blobs in a container
+- **azure_upload_blob**: Uploads a blob to a container
+- **azure_download_blob**: Downloads a blob and returns its content
+- **azure_delete_blob**: Deletes a blob from a container
 
 ### Example Usage
 
-To list containers in a storage account:
+#### List Containers
 
 ```json
 {
-  "operation": "listContainers",
   "accountName": "yourstorageaccount"
 }
 ```
 
-To upload a blob:
+#### Create Container
 
 ```json
 {
-  "operation": "uploadBlob",
+  "accountName": "yourstorageaccount",
+  "containerName": "mycontainer"
+}
+```
+
+#### List Blobs
+
+```json
+{
+  "accountName": "yourstorageaccount",
+  "containerName": "mycontainer"
+}
+```
+
+#### Upload Blob
+
+```json
+{
   "accountName": "yourstorageaccount",
   "containerName": "mycontainer",
   "blobName": "example.txt",
@@ -117,9 +147,38 @@ To upload a blob:
 }
 ```
 
+#### Download Blob
+
+```json
+{
+  "accountName": "yourstorageaccount",
+  "containerName": "mycontainer",
+  "blobName": "example.txt"
+}
+```
+
+#### Delete Blob
+
+```json
+{
+  "accountName": "yourstorageaccount",
+  "containerName": "mycontainer",
+  "blobName": "example.txt"
+}
+```
+
+#### Delete Container
+
+```json
+{
+  "accountName": "yourstorageaccount",
+  "containerName": "mycontainer"
+}
+```
+
 ### Debugging
 
-If you encounter issues with the Azure Blob Storage tool, check the console logs for detailed debugging information. Common issues include:
+If you encounter issues with the Azure Storage tools, check the console logs for detailed debugging information. Common issues include:
 
 - Authentication failures
 - Missing permissions
