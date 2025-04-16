@@ -21,9 +21,7 @@ class ListContainersTool extends BaseAzureStorageTool<ListContainersInput> {
 
   async execute(input: ListContainersInput) {
     try {
-      console.log(
-        `[DEBUG] Starting ListContainersTool for account: ${input.accountName}`
-      );
+      console.log(`[DEBUG] Starting ListContainersTool for account: ${input.accountName}`);
       const blobServiceClient = this.createBlobServiceClient(input.accountName);
 
       console.log(`[DEBUG] Getting container iterator`);

@@ -25,24 +25,16 @@ class ListBlobsTool extends BaseAzureStorageTool<ListBlobsInput> {
   };
 
   async execute(input: ListBlobsInput) {
-    console.log(
-      `[DEBUG] Starting ListBlobsTool for container: ${input.containerName}`
-    );
+    console.log(`[DEBUG] Starting ListBlobsTool for container: ${input.containerName}`);
 
     try {
       const blobServiceClient = this.createBlobServiceClient(input.accountName);
 
-      console.log(
-        `[DEBUG] Getting container client for: ${input.containerName}`
-      );
-      const containerClient = blobServiceClient.getContainerClient(
-        input.containerName
-      );
+      console.log(`[DEBUG] Getting container client for: ${input.containerName}`);
+      const containerClient = blobServiceClient.getContainerClient(input.containerName);
 
       // Check if container exists
-      console.log(
-        `[DEBUG] Checking if container exists: ${input.containerName}`
-      );
+      console.log(`[DEBUG] Checking if container exists: ${input.containerName}`);
       const containerExists = await containerClient.exists();
       if (!containerExists) {
         console.log(`[DEBUG] Container does not exist: ${input.containerName}`);
@@ -64,9 +56,7 @@ class ListBlobsTool extends BaseAzureStorageTool<ListBlobsInput> {
       const firstBlobResponse = await blobIterator.next();
 
       if (!firstBlobResponse.done && firstBlobResponse.value) {
-        console.log(
-          `[DEBUG] Successfully retrieved first blob: ${firstBlobResponse.value.name}`
-        );
+        console.log(`[DEBUG] Successfully retrieved first blob: ${firstBlobResponse.value.name}`);
 
         // Add the first blob to our results
         const firstBlob = firstBlobResponse.value;
@@ -99,9 +89,7 @@ class ListBlobsTool extends BaseAzureStorageTool<ListBlobsInput> {
 
         console.log(`[DEBUG] Retrieved ${blobs.length} blobs in total`);
       } else {
-        console.log(
-          `[DEBUG] No blobs found in container or error getting first blob`
-        );
+        console.log(`[DEBUG] No blobs found in container or error getting first blob`);
       }
 
       console.log(`[DEBUG] Completed listBlobs, found ${blobs.length} blobs`);

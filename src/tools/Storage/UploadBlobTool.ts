@@ -36,22 +36,14 @@ class UploadBlobTool extends BaseAzureStorageTool<UploadBlobInput> {
 
   async execute(input: UploadBlobInput) {
     try {
-      console.log(
-        `[DEBUG] Uploading blob ${input.blobName} to container ${input.containerName}`
-      );
+      console.log(`[DEBUG] Uploading blob ${input.blobName} to container ${input.containerName}`);
       const blobServiceClient = this.createBlobServiceClient(input.accountName);
 
-      console.log(
-        `[DEBUG] Getting container client for: ${input.containerName}`
-      );
-      const containerClient = blobServiceClient.getContainerClient(
-        input.containerName
-      );
+      console.log(`[DEBUG] Getting container client for: ${input.containerName}`);
+      const containerClient = blobServiceClient.getContainerClient(input.containerName);
 
       // Check if container exists
-      console.log(
-        `[DEBUG] Checking if container exists: ${input.containerName}`
-      );
+      console.log(`[DEBUG] Checking if container exists: ${input.containerName}`);
       const containerExists = await containerClient.exists();
       if (!containerExists) {
         console.log(`[DEBUG] Container does not exist: ${input.containerName}`);
@@ -63,17 +55,10 @@ class UploadBlobTool extends BaseAzureStorageTool<UploadBlobInput> {
       }
 
       console.log(`[DEBUG] Getting block blob client for: ${input.blobName}`);
-      const blockBlobClient = containerClient.getBlockBlobClient(
-        input.blobName
-      );
+      const blockBlobClient = containerClient.getBlockBlobClient(input.blobName);
 
-      console.log(
-        `[DEBUG] Uploading blob: ${input.blobName}, size: ${input.content.length} bytes`
-      );
-      const uploadBlobResponse = await blockBlobClient.upload(
-        input.content,
-        input.content.length
-      );
+      console.log(`[DEBUG] Uploading blob: ${input.blobName}, size: ${input.content.length} bytes`);
+      const uploadBlobResponse = await blockBlobClient.upload(input.content, input.content.length);
       console.log(`[DEBUG] Blob uploaded successfully: ${input.blobName}`);
 
       return {
