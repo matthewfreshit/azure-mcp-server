@@ -31,22 +31,14 @@ class DownloadBlobTool extends BaseAzureStorageTool<DownloadBlobInput> {
 
   async execute(input: DownloadBlobInput) {
     try {
-      console.log(
-        `[DEBUG] Downloading blob ${input.blobName} from container ${input.containerName}`
-      );
+      console.log(`[DEBUG] Downloading blob ${input.blobName} from container ${input.containerName}`);
       const blobServiceClient = this.createBlobServiceClient(input.accountName);
 
-      console.log(
-        `[DEBUG] Getting container client for: ${input.containerName}`
-      );
-      const containerClient = blobServiceClient.getContainerClient(
-        input.containerName
-      );
+      console.log(`[DEBUG] Getting container client for: ${input.containerName}`);
+      const containerClient = blobServiceClient.getContainerClient(input.containerName);
 
       // Check if container exists
-      console.log(
-        `[DEBUG] Checking if container exists: ${input.containerName}`
-      );
+      console.log(`[DEBUG] Checking if container exists: ${input.containerName}`);
       const containerExists = await containerClient.exists();
       if (!containerExists) {
         console.log(`[DEBUG] Container does not exist: ${input.containerName}`);
@@ -75,12 +67,8 @@ class DownloadBlobTool extends BaseAzureStorageTool<DownloadBlobInput> {
       console.log(`[DEBUG] Downloading blob: ${input.blobName}`);
       const downloadResponse = await blobClient.download();
       console.log(`[DEBUG] Blob downloaded, converting stream to string`);
-      const downloaded = await this.streamToString(
-        downloadResponse.readableStreamBody
-      );
-      console.log(
-        `[DEBUG] Blob content retrieved, size: ${downloaded.length} bytes`
-      );
+      const downloaded = await this.streamToString(downloadResponse.readableStreamBody);
+      console.log(`[DEBUG] Blob content retrieved, size: ${downloaded.length} bytes`);
 
       return {
         containerName: input.containerName,

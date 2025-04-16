@@ -31,22 +31,14 @@ class DeleteBlobTool extends BaseAzureStorageTool<DeleteBlobInput> {
 
   async execute(input: DeleteBlobInput) {
     try {
-      console.log(
-        `[DEBUG] Deleting blob ${input.blobName} from container ${input.containerName}`
-      );
+      console.log(`[DEBUG] Deleting blob ${input.blobName} from container ${input.containerName}`);
       const blobServiceClient = this.createBlobServiceClient(input.accountName);
 
-      console.log(
-        `[DEBUG] Getting container client for: ${input.containerName}`
-      );
-      const containerClient = blobServiceClient.getContainerClient(
-        input.containerName
-      );
+      console.log(`[DEBUG] Getting container client for: ${input.containerName}`);
+      const containerClient = blobServiceClient.getContainerClient(input.containerName);
 
       // Check if container exists
-      console.log(
-        `[DEBUG] Checking if container exists: ${input.containerName}`
-      );
+      console.log(`[DEBUG] Checking if container exists: ${input.containerName}`);
       const containerExists = await containerClient.exists();
       if (!containerExists) {
         console.log(`[DEBUG] Container does not exist: ${input.containerName}`);

@@ -1,10 +1,10 @@
 {
   "name": "azure-mcp-server",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Azure MCP server",
   "type": "module",
   "bin": {
-    "my-mcp-server": "./dist/index.js"
+    "azure-mcp-server": "./dist/index.js"
   },
   "files": [
     "dist"
@@ -13,10 +13,17 @@
     "build": "tsc && mcp-build && node scripts/process-tools.js",
     "watch": "tsc --watch",
     "start": "node dist/index.js",
+    "clean": "rimraf dist coverage",
+    "prepare": "husky",
+    "postinstall": "patch-package",
     "process-tools": "node scripts/process-tools.js",
-    "postinstall": "patch-package"
+    "lint": "npx eslint --ext=ts src/",
+    "lint:fix": "npx eslint --ext=ts --fix src/",
+    "lint-fix-no-errors": "eslintNoErrors() { npx eslint --fix ${@} || true; }; eslintNoErrors",
+    "prettier": "prettier --write '@(src)/**/*.@(css|scss|ts|js)' --ignore-path"
   },
   "dependencies": {
+    "@azure/arm-appservice": "^11.0.0",
     "@azure/arm-compute": "^22.4.0",
     "@azure/identity": "^4.8.0",
     "@azure/storage-blob": "^12.27.0",
@@ -24,7 +31,21 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.24",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "~9.1.0",
+    "eslint-plugin-import": "~2.29.0",
+    "husky": "^9.1.7",
     "patch-package": "^8.0.0",
+    "prettier": "^3.5.3",
     "typescript": "^5.3.3"
+  },
+  "lint-staged": {
+    "**/*.{js,ts,html}": [
+      "npm run lint-fix-no-errors --",
+      "npx prettier --write"
+    ],
+    "**/*.{css,scss,json}": [
+      "npx prettier --write"
+    ]
   }
 }

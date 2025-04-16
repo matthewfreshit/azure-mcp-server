@@ -5,9 +5,7 @@ import { DefaultAzureCredential } from '@azure/identity';
 /**
  * Base class for Azure Storage tools that provides common functionality
  */
-export default abstract class BaseAzureStorageTool<
-  T extends Record<string, any>
-> extends MCPTool<T> {
+export default abstract class BaseAzureStorageTool<T extends Record<string, any>> extends MCPTool<T> {
   /**
    * Creates a BlobServiceClient using DefaultAzureCredential
    * @param accountName Azure Storage account name
@@ -15,10 +13,7 @@ export default abstract class BaseAzureStorageTool<
    */
   protected createBlobServiceClient(accountName: string): BlobServiceClient {
     const credential = new DefaultAzureCredential();
-    return new BlobServiceClient(
-      `https://${accountName}.blob.core.windows.net`,
-      credential
-    );
+    return new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, credential);
   }
 
   /**
@@ -26,9 +21,7 @@ export default abstract class BaseAzureStorageTool<
    * @param readableStream The readable stream to convert
    * @returns Promise that resolves to the stream content as a string
    */
-  protected async streamToString(
-    readableStream: NodeJS.ReadableStream | undefined
-  ): Promise<string> {
+  protected async streamToString(readableStream: NodeJS.ReadableStream | undefined): Promise<string> {
     if (!readableStream) {
       return '';
     }
