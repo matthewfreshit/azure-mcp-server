@@ -17,6 +17,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@azure/arm-compute": "^22.4.0",
     "@azure/identity": "^4.8.0",
     "@azure/storage-blob": "^12.27.0",
     "mcp-framework": "^0.2.11"
