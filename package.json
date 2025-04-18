@@ -1,6 +1,6 @@
 {
   "name": "azure-mcp-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Azure MCP server",
   "type": "module",
   "bin": {
@@ -27,6 +27,8 @@
     "@azure/arm-compute": "^22.4.0",
     "@azure/identity": "^4.8.0",
     "@azure/storage-blob": "^12.27.0",
+    "@azure/keyvault-secrets": "^4.8.0",
+    "@azure/arm-keyvault": "^3.0.0",
     "mcp-framework": "^0.2.11"
   },
   "devDependencies": {

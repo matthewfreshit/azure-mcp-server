@@ -23,7 +23,8 @@ azure-mcp-server/
 │   ├── tools/                # MCP Tools
 │   │   ├── Storage/          # Azure Storage tools
 │   │   ├── VirtualMachine/   # Azure VM tools
-│   │   └── AppService/      # Azure App Service tools
+│   │   ├── AppService/       # Azure App Service tools
+|   |   └── KeyVault/         # Azure Key Vault tools
 │   └── index.ts              # Server entry point
 ├── package.json
 └── tsconfig.json
@@ -38,6 +39,7 @@ This server provides tools for interacting with multiple Azure services:
 | Storage          | `azure_*`      | Blob storage operations  |
 | Virtual Machines | `azure_vms_*`  | VM management operations |
 | App Service      | `azure_apps_*` | App Service operations   |
+| Key Vault        | `azure_kv_*`   | Key Vault operations     |
 
 ### Authentication
 
@@ -109,6 +111,23 @@ All tools use DefaultAzureCredential from @azure/identity, which tries multiple 
 | **azure_apps_start**      | Start App Service       | `{ "subscriptionId": "your-subscription-id", "resourceGroupName": "your-resource-group", "appName": "your-app-name" }` |
 | **azure_apps_stop**       | Stop App Service        | `{ "subscriptionId": "your-subscription-id", "resourceGroupName": "your-resource-group", "appName": "your-app-name" }` |
 | **azure_apps_restart**    | Restart App Service     | `{ "subscriptionId": "your-subscription-id", "resourceGroupName": "your-resource-group", "appName": "your-app-name" }` |
+
+### Azure Key Vault Tools
+
+#### Required Permissions
+
+- **Key Vault Contributor**: For managing Key Vault settings
+- **Key Vault Secrets User**: For CRUD operations on secrets
+
+#### Key Vault Operations
+
+| Tool                          | Description              | Example Input                                                                 |
+| ----------------------------- | ------------------------ | --------------------------------------------------------------------------- |
+| **azure_list_keyvaults**      | List Key Vaults          | `{ "subscriptionId": "your-subscription-id" }`                           |
+| **azure_list_secrets**        | List secrets in Key Vault| `{ "vaultUrl": "https://your-keyvault-name.vault.azure.net" }`           |
+| **azure_get_secret**          | Get a secret             | `{ "vaultUrl": "https://your-keyvault-name.vault.azure.net", "secretName": "your-secret-name" }` |
+| **azure_set_secret**          | Set a secret             | `{ "vaultUrl": "https://your-keyvault-name.vault.azure.net", "secretName": "your-secret-name", "secretValue": "your-secret-value" }` |
+| **azure_delete_secret**       | Delete a secret          | `{ "vaultUrl": "https://your-keyvault-name.vault.azure.net", "secretName": "your-secret-name" }` |
 
 ## Tool Development
 
