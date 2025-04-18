@@ -1,16 +1,8 @@
 diff --git a/node_modules/mcp-framework/dist/loaders/toolLoader.js b/node_modules/mcp-framework/dist/loaders/toolLoader.js
-index bd3f7a7..1341a0a 100644
+index bd3f7a7..23d0b73 100644
 --- a/node_modules/mcp-framework/dist/loaders/toolLoader.js
 +++ b/node_modules/mcp-framework/dist/loaders/toolLoader.js
-@@ -1,6 +1,7 @@
- import { join, dirname } from "path";
- import { promises as fs } from "fs";
- import { logger } from "../core/Logger.js";
-+import { MCPTool } from "../tools/BaseTool.js";
- export class ToolLoader {
-     TOOLS_DIR;
-     EXCLUDED_FILES = ["BaseTool.js", "*.test.js", "*.spec.js"];
-@@ -16,8 +17,8 @@ export class ToolLoader {
+@@ -16,8 +16,8 @@ export class ToolLoader {
                  logger.debug("Tools path exists but is not a directory");
                  return false;
              }
@@ -21,7 +13,7 @@ index bd3f7a7..1341a0a 100644
              logger.debug(`Tools directory has valid files: ${hasValidFiles}`);
              return hasValidFiles;
          }
-@@ -26,6 +27,16 @@ export class ToolLoader {
+@@ -26,6 +26,16 @@ export class ToolLoader {
              return false;
          }
      }
@@ -38,25 +30,15 @@ index bd3f7a7..1341a0a 100644
      isToolFile(file) {
          if (!file.endsWith(".js"))
              return false;
-@@ -39,19 +50,21 @@ export class ToolLoader {
+@@ -39,6 +49,7 @@ export class ToolLoader {
          logger.debug(`Checking file ${file}: ${isExcluded ? "excluded" : "included"}`);
          return !isExcluded;
      }
 +
      validateTool(tool) {
--        const isValid = Boolean(tool &&
-+        const isValid = Boolean((tool &&
+         const isValid = Boolean(tool &&
              typeof tool.name === "string" &&
-             tool.toolDefinition &&
--            typeof tool.toolCall === "function");
-+            typeof tool.toolCall === "function") ||
-+            tool instanceof MCPTool);
-         if (isValid) {
--            logger.debug(`Validated tool: ${tool.name}`);
--        }
-+            logger.debug(`Validated tool: ${tool.name}`);        }
-         else {
-             logger.warn(`Invalid tool found: missing required properties`);
+@@ -52,6 +63,7 @@ export class ToolLoader {
          }
          return isValid;
      }
@@ -64,7 +46,7 @@ index bd3f7a7..1341a0a 100644
      async loadTools() {
          try {
              logger.debug(`Attempting to load tools from: ${this.TOOLS_DIR}`);
-@@ -67,17 +80,16 @@ export class ToolLoader {
+@@ -67,17 +79,16 @@ export class ToolLoader {
                  logger.error(`Path is not a directory: ${this.TOOLS_DIR}`);
                  return [];
              }
